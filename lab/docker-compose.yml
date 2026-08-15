@@ -29,6 +29,7 @@ services:
       - ALL
     cap_add:
       - NET_BIND_SERVICE
+      - CHOWN
     read_only: true
     tmpfs:
       - /var/cache/nginx
