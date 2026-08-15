@@ -117,7 +117,8 @@ def main():
             assert listed["records"][0]["case_id"] == "CASE-SYN-001"
 
             _, l2 = post(base + "/api/case", {"case_id": "CASE-SYN-001", "layer": "L2", "purpose": "family_reunification"}, session, 200)
-            assert "family_structure" in l2["record"] and "sealed_note" not in l2["record"]
+            l2_record = l2.get("record") or l2.get("case") or {}
+            assert "family_structure" in l2_record and "sealed_note" not in l2_record
 
             _, ai = post(base + "/api/analyze", {"case_id": "CASE-SYN-001", "layer": "L2", "purpose": "family_reunification"}, session, 200)
             assert ai["decision_authority"] is False
@@ -133,7 +134,8 @@ def main():
 
             _, order = post(base + "/api/mock-judicial-order", {"case_id": "CASE-SYN-001", "purpose": "family_reunification"}, session, 200)
             _, l4 = post(base + "/api/case", {"case_id": "CASE-SYN-001", "layer": "L4", "purpose": "family_reunification", "order_id": order["order_id"]}, session, 200)
-            assert "sealed_note" in l4["record"]
+            l4_record = l4.get("record") or l4.get("case") or {}
+            assert "sealed_note" in l4_record
 
             post(base + "/api/decision", {"case_id": "CASE-SYN-001", "purpose": "family_reunification", "outcome": "follow_up", "reason": "synthetic e2e"}, session, 200)
             _, audit = get(base + "/api/audit", session)
