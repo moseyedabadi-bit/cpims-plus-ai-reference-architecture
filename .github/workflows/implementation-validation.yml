@@ -1,0 +1,62 @@
+name: implementation-validation
+
+on:
+  push:
+    paths:
+      - 'implementation/**'
+      - '.github/workflows/implementation-validation.yml'
+  pull_request:
+    paths:
+      - 'implementation/**'
+      - '.github/workflows/implementation-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  security-reference:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run security reference tests
+        working-directory: implementation/security
+        run: python -m unittest -v test_reference.py
+
+  persian-localization:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+        with:
+          path: overlay
+      - name: Checkout pinned Primero
+        uses: actions/checkout@v4
+        with:
+          repository: primeroIMS/primero
+          ref: v2.14.5
+          path: primero
+          fetch-depth: 1
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Generate fa-IR
+        run: ruby overlay/implementation/localization/build_fa_ir.rb --upstream ./primero --output ./generated
+      - name: Verify translation-key coverage
+        run: ruby overlay/implementation/localization/qa_locale.rb --primero ./primero --generated ./generated
+      - name: Apply locale and RTL patch to Primero
+        run: ruby overlay/implementation/localization/apply_to_primero.rb --primero ./primero --generated ./generated
+      - name: Verify expected files and patch cleanliness
+        run: |
+          test -s primero/config/locales/fa-IR.yml
+          test -s primero/config/locales/dates/fa-IR.yml
+          grep -q 'fa-IR' primero/config/initializers/locale.rb
+          grep -q "'fa-IR':" primero/config/initializers/locales_fallbacks.rb
+          grep -q 'case "fa-IR":' primero/app/javascript/components/i18n/utils.js
+          git -C primero diff --check
