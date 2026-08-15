@@ -1,10 +1,46 @@
 project:
   name: CPIMS+ AI
-  status: research-synthetic-poc
+  status: research-synthetic-poc-with-persian-primero-overlay
   owner_model: individual-public-interest
   deployment_with_real_data: prohibited-until-gates-pass
   machine_readable: true
   human_readable: true
+
+upstream_software:
+  platform: Primero
+  repository: primeroIMS/primero
+  pinned_version: v2.14.5
+  upstream_license: AGPL-3.0-or-later
+  official_cpims_configuration_included: false
+  note: >-
+    Official CPIMS+ configuration bundles are distributed separately by the upstream
+    maintainers. This repository provides an independent localization/security overlay
+    and does not claim to reproduce the official configuration.
+
+localization:
+  target_locale: fa-IR
+  direction: rtl
+  source_structure_locale: fa-AF
+  coverage_model: clone-all-upstream-translation-keys-then-normalize-values
+  output_committed: false
+  reproducible_generator: implementation/localization/build_fa_ir.rb
+  primero_patcher: implementation/localization/apply_to_primero.rb
+  qa: implementation/localization/qa_locale.rb
+  upstream_blob_pinning: true
+  calendar_storage_semantics_changed: false
+  professional_language_review_required: true
+  review_domains:
+    - child_protection
+    - legal
+    - medical
+    - safeguarding
+
+implementation:
+  synthetic_only: true
+  ci_workflow: .github/workflows/implementation-validation.yml
+  security_reference: implementation/security/reference.py
+  security_tests: implementation/security/test_reference.py
+  production_authentication_claim: false
 
 mission:
   statement: >-
@@ -23,6 +59,8 @@ invariants:
   - pairwise_pseudonymous_identifiers
   - minimum_necessary_context
   - independent_auditability
+  - consent_distinct_from_legal_authority
+  - infrastructure_privilege_not_case_authority
   - synthetic_first
 
 identity:
@@ -34,14 +72,24 @@ identity:
   gateway_issues: scoped-session-credential
   global_child_identifier: forbidden
   pairwise_pseudonymous_identifiers: required
+  assertion_checks:
+    - issuer
+    - audience
+    - nonce
+    - freshness
+    - expiration
+    - replay
+    - subject_binding
 
 consent:
   authentication_separate_from_consent: true
+  consent_separate_from_legal_authority: true
   manifest_based: true
   step_up_for_sensitive_layers: true
   revocable: true
   time_bound: true
   purpose_bound: true
+  requester_bound: true
 
 data_classification:
   L1: operational
@@ -51,20 +99,26 @@ data_classification:
 
 L4_access:
   superuser_model: forbidden
-  authorization_authority: judicial-or-independent-oversight
+  standing_judicial_database_access: forbidden
+  authorization_authority: legally-defined-judicial-statutory-or-emergency-grant
   requirements:
     - scoped_case_reference
     - explicit_purpose
     - requester_identity
     - read_scope
-    - export_policy
+    - no_bulk_export
     - short_ttl
     - immutable_audit
+  emergency_access:
+    short_lived: true
+    reason_required: true
+    post_review_required: true
 
 ai:
   direct_database_access: forbidden
   persistent_identity: forbidden
   case_anchor_visibility: forbidden
+  raw_identity_fields: forbidden
   context_token: ephemeral-single-purpose
   allowed_capabilities:
     - summarize
@@ -103,6 +157,8 @@ data:
 audit:
   independent_append_only: true
   admin_deletion: forbidden
+  direct_identity_fields: forbidden
+  tamper_evidence_required: true
   events_include:
     - actor
     - action
@@ -132,9 +188,12 @@ standards_alignment:
 
 release_gates:
   - architecture_review
+  - professional_fa_ir_language_review
+  - authorized_cpims_configuration_review
   - privacy_and_threat_model_review
   - synthetic_red_team_poc
   - independent_security_and_ethics_review
+  - jurisdiction_specific_legal_and_child_protection_review
 
 repository_safety:
   real_child_data: forbidden
