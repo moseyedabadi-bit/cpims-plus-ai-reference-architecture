@@ -1,0 +1,145 @@
+project:
+  name: CPIMS+ AI
+  status: research-synthetic-poc
+  owner_model: individual-public-interest
+  deployment_with_real_data: prohibited-until-gates-pass
+  machine_readable: true
+  human_readable: true
+
+mission:
+  statement: >-
+    Explore a human-centered, privacy-preserving AI architecture for child-protection
+    and humanitarian decision support in high-risk institutional environments.
+  ai_role: assist-only
+  human_role: accountable-decision-maker
+
+invariants:
+  - no_single_point_of_complete_knowledge
+  - identifier_is_not_authority
+  - purpose_bound_disclosure
+  - human_in_command
+  - distributed_trust
+  - local_biometric_activation_only
+  - pairwise_pseudonymous_identifiers
+  - minimum_necessary_context
+  - independent_auditability
+  - synthetic_first
+
+identity:
+  local_biometric_verification: true
+  biometric_storage_in_cpims: false
+  external_idp_count: 3
+  trust_policy: 2-of-3-valid-independent-assertions
+  providers_issue: signed_assertions
+  gateway_issues: scoped-session-credential
+  global_child_identifier: forbidden
+  pairwise_pseudonymous_identifiers: required
+
+consent:
+  authentication_separate_from_consent: true
+  manifest_based: true
+  step_up_for_sensitive_layers: true
+  revocable: true
+  time_bound: true
+  purpose_bound: true
+
+data_classification:
+  L1: operational
+  L2: sensitive-social-family
+  L3: highly-sensitive-health-violence-psychological
+  L4: exceptional-restricted
+
+L4_access:
+  superuser_model: forbidden
+  authorization_authority: judicial-or-independent-oversight
+  requirements:
+    - scoped_case_reference
+    - explicit_purpose
+    - requester_identity
+    - read_scope
+    - export_policy
+    - short_ttl
+    - immutable_audit
+
+ai:
+  direct_database_access: forbidden
+  persistent_identity: forbidden
+  case_anchor_visibility: forbidden
+  context_token: ephemeral-single-purpose
+  allowed_capabilities:
+    - summarize
+    - retrieve_evidence
+    - compare
+    - suggest
+    - explain
+    - identify_uncertainty
+  forbidden_capabilities:
+    - approve_reunification
+    - reject_family
+    - remove_child
+    - deny_service
+    - authorize_disclosure
+    - issue_judicial_action
+  required_output_fields:
+    - evidence
+    - recommendation
+    - confidence
+    - uncertainty
+    - missing_evidence
+    - alternative_explanations
+    - model_version
+  valid_abstention_outputs:
+    - insufficient_evidence
+    - human_investigation_required
+
+data:
+  production_training_default: forbidden
+  derived_attributes_preferred: true
+  embeddings_are_data: true
+  backup_is_data: true
+  bulk_export_default: forbidden
+  domain_key_separation: required
+
+audit:
+  independent_append_only: true
+  admin_deletion: forbidden
+  events_include:
+    - actor
+    - action
+    - purpose
+    - scoped_case_reference
+    - data_layer
+    - authorization
+    - timestamp
+    - policy_version
+    - ai_model_version
+    - ai_recommendation
+    - human_decision
+
+standards_alignment:
+  claim: nist-aligned-not-certified
+  references:
+    - NIST-SP-800-63-4
+    - NIST-SP-800-63A-4
+    - NIST-SP-800-63B-4
+    - NIST-SP-800-63C-4
+    - NIST-SP-800-207
+    - NIST-SP-800-207A
+    - NIST-SP-800-53-Rev5
+    - NIST-CSF-2.0
+    - NIST-Privacy-Framework
+    - NIST-AI-RMF
+
+release_gates:
+  - architecture_review
+  - privacy_and_threat_model_review
+  - synthetic_red_team_poc
+  - independent_security_and_ethics_review
+
+repository_safety:
+  real_child_data: forbidden
+  real_family_data: forbidden
+  biometric_samples: forbidden
+  real_tokens: forbidden
+  organization_secrets: forbidden
+  real_ip_hostname_credentials: forbidden
