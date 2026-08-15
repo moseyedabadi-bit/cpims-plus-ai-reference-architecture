@@ -1,6 +1,6 @@
 project:
   name: CPIMS+ AI
-  status: research-synthetic-poc-with-persian-primero-overlay
+  status: research-runnable-synthetic-lab-with-persian-primero-overlay
   owner_model: individual-public-interest
   deployment_with_real_data: prohibited-until-gates-pass
   machine_readable: true
@@ -13,27 +13,74 @@ upstream_software:
   upstream_license: AGPL-3.0-or-later
   official_cpims_configuration_included: false
   note: >-
-    Official CPIMS+ configuration bundles are distributed separately by the upstream
-    maintainers. This repository provides an independent localization/security overlay
-    and does not claim to reproduce the official configuration.
+    Official CPIMS+ configuration bundles are distributed separately by upstream maintainers.
+    This repository provides an independent localization/security overlay and a synthetic
+    workflow laboratory; it does not claim to reproduce the official CPIMS+ configuration.
 
 localization:
   target_locale: fa-IR
   direction: rtl
   source_structure_locale: fa-AF
   coverage_model: clone-all-upstream-translation-keys-then-normalize-values
-  output_committed: false
   reproducible_generator: implementation/localization/build_fa_ir.rb
   primero_patcher: implementation/localization/apply_to_primero.rb
   qa: implementation/localization/qa_locale.rb
   upstream_blob_pinning: true
   calendar_storage_semantics_changed: false
   professional_language_review_required: true
-  review_domains:
-    - child_protection
-    - legal
-    - medical
-    - safeguarding
+  review_domains: [child_protection, legal, medical, safeguarding]
+
+synthetic_lab:
+  runnable: true
+  location: lab/
+  runtime: docker-compose
+  public_entrypoint: http://localhost:8080
+  exposed_services: [portal]
+  synthetic_data_only: true
+  official_cpims_runtime: false
+  logical_idp_simulation_only: true
+  production_crypto: false
+  components:
+    - portal
+    - trust_gateway
+    - idp_a
+    - idp_b
+    - idp_c
+    - policy_pdp
+    - data_gateway_pep
+    - synthetic_case_domain
+    - synthetic_oversight_authority
+    - ai_context_service
+    - tamper_evident_audit
+  isolated_networks:
+    - identity
+    - policy
+    - policy_enforcement
+    - data
+    - ai
+    - audit
+  enforced_properties:
+    - two_of_three_identity_threshold
+    - issuer_audience_nonce_freshness_expiry_replay_checks
+    - same_subject_binding
+    - opaque_browser_session
+    - authentication_separate_from_consent
+    - l2_consent_required
+    - l3_step_up_consent_required
+    - l4_independent_legal_authorization_required
+    - l4_bulk_export_denied
+    - oversight_has_no_case_database_route
+    - gateway_has_no_direct_case_database_route
+    - ai_has_no_direct_case_database_route
+    - ai_l4_denied
+    - ai_identity_fields_rejected
+    - human_decision_recorded_separately
+    - pseudonymous_tamper_evident_audit
+    - consent_revocation_enforced
+  validation:
+    unit_tests: lab/tests/test_lab.py
+    e2e_test: lab/tests/e2e_lab.py
+    ci_workflow: .github/workflows/synthetic-lab-validation.yml
 
 implementation:
   synthetic_only: true
@@ -64,14 +111,15 @@ invariants:
   - synthetic_first
 
 identity:
-  local_biometric_verification: true
-  biometric_storage_in_cpims: false
-  external_idp_count: 3
-  trust_policy: 2-of-3-valid-independent-assertions
-  providers_issue: signed_assertions
-  gateway_issues: scoped-session-credential
-  global_child_identifier: forbidden
-  pairwise_pseudonymous_identifiers: required
+  intended_production_model:
+    local_biometric_verification: true
+    biometric_storage_in_cpims: false
+    external_idp_count: 3
+    trust_policy: 2-of-3-valid-independent-assertions
+    providers_issue: signed_assertions
+    gateway_issues: scoped-session-credential
+    global_child_identifier: forbidden
+    pairwise_pseudonymous_identifiers: required
   assertion_checks:
     - issuer
     - audience
@@ -84,7 +132,6 @@ identity:
 consent:
   authentication_separate_from_consent: true
   consent_separate_from_legal_authority: true
-  manifest_based: true
   step_up_for_sensitive_layers: true
   revocable: true
   time_bound: true
@@ -105,28 +152,17 @@ L4_access:
     - scoped_case_reference
     - explicit_purpose
     - requester_identity
-    - read_scope
+    - permitted_operation
     - no_bulk_export
     - short_ttl
     - immutable_audit
-  emergency_access:
-    short_lived: true
-    reason_required: true
-    post_review_required: true
 
 ai:
   direct_database_access: forbidden
   persistent_identity: forbidden
   case_anchor_visibility: forbidden
   raw_identity_fields: forbidden
-  context_token: ephemeral-single-purpose
-  allowed_capabilities:
-    - summarize
-    - retrieve_evidence
-    - compare
-    - suggest
-    - explain
-    - identify_uncertainty
+  allowed_capabilities: [summarize, retrieve_evidence, compare, suggest, explain, identify_uncertainty]
   forbidden_capabilities:
     - approve_reunification
     - reject_family
@@ -142,9 +178,8 @@ ai:
     - missing_evidence
     - alternative_explanations
     - model_version
-  valid_abstention_outputs:
-    - insufficient_evidence
-    - human_investigation_required
+    - decision_authority
+  valid_abstention_outputs: [insufficient_evidence, human_investigation_required]
 
 data:
   production_training_default: forbidden
@@ -155,22 +190,10 @@ data:
   domain_key_separation: required
 
 audit:
-  independent_append_only: true
-  admin_deletion: forbidden
+  independent_append_only_target: true
+  admin_deletion_target: forbidden
   direct_identity_fields: forbidden
   tamper_evidence_required: true
-  events_include:
-    - actor
-    - action
-    - purpose
-    - scoped_case_reference
-    - data_layer
-    - authorization
-    - timestamp
-    - policy_version
-    - ai_model_version
-    - ai_recommendation
-    - human_decision
 
 standards_alignment:
   claim: nist-aligned-not-certified
