@@ -1,6 +1,6 @@
 # CPIMS+ AI — Human-Centered, Privacy-Preserving Reference Architecture
 
-> **Status:** Research / Synthetic PoC only. **No real child, family, refugee, beneficiary, biometric, or case data is permitted in this repository.**
+> **Status:** Research / Synthetic PoC + Persian Primero implementation overlay. **No real child, family, refugee, beneficiary, biometric, or case data is permitted in this repository.**
 
 ## What this project is
 
@@ -10,7 +10,17 @@ The architecture is intentionally designed around a simple rule:
 
 > **AI may assist. Humans remain accountable for decisions.**
 
-The project is not a deployment of CPIMS+ and is not endorsed by UNICEF, WFP, NIST, or any government or international organization. It is an independent reference architecture and case-study proposal.
+The project is not an endorsed deployment of CPIMS+ and is not endorsed by UNICEF, WFP, NIST, or any government or international organization. It is an independent reference architecture, Persian-localization overlay, security reference implementation, and case-study proposal.
+
+## Persian Primero implementation
+
+The repository now contains [`implementation/`](implementation/README.md), a reproducible implementation overlay for the open-source **Primero v2.14.5** codebase used by CPIMS+.
+
+The Persian localization path uses Primero's existing complete `fa-AF` locale as a structural baseline and generates an Iranian Persian `fa-IR` locale with the same translation-key coverage, Persian terminology normalization, Persian Gregorian month labels, RTL registration, and fallback configuration. Automated QA verifies missing translation keys and highlights terminology that still needs professional Iranian child-protection/legal/medical review.
+
+Because the official CPIMS+ configuration bundles are distributed separately by the Primero/CPIMS+ maintainers, this repository does **not** pretend to contain or recreate the official CPIMS+ configuration. The overlay is designed to be applied to an authorized Primero/CPIMS+ installation.
+
+The same implementation directory contains executable synthetic security reference code for 2-of-3 identity attestations, replay/audience/nonce checks, pairwise pseudonyms, consent and step-up authorization, separate L4 legal/emergency grants, AI context minimization, L4 export denial, and tamper-evident audit chaining. These are reference controls, not a claim of production certification.
 
 ## Core architectural principles
 
@@ -50,6 +60,7 @@ The 2-of-3 identity-attestation design, judicial/independent authorization model
 - [`CONSENT_IDENTITY.md`](CONSENT_IDENTITY.md) — identity, local biometrics, 2-of-3 attestation, consent, and step-up authorization.
 - [`NIST_MAPPING.md`](NIST_MAPPING.md) — reference mapping from architecture functions to NIST publications/control families.
 - [`SECURITY.md`](SECURITY.md) — repository security policy and prohibition on real beneficiary data.
+- [`implementation/`](implementation/README.md) — Persian Primero localization and executable synthetic security reference.
 - [`docs/README.fa.md`](docs/README.fa.md) — معرفی و اصول پروژه به زبان فارسی.
 
 ## High-level flow
@@ -86,9 +97,9 @@ This repository intentionally does **not** contain:
 - real case tokens or identity mappings;
 - instructions for bypassing lawful access controls or concealing illegal activity.
 
-## Licensing and public-interest intent
+## Licensing
 
-The project is intended to be reusable, inspectable, criticizable, and machine-readable. The software and documentation in this repository are released under the repository license. The ethical principles in this project express the author's intended use but do not silently modify the terms of the license.
+The original architecture documents and original reference/overlay code in this repository are released under the repository MIT license. Primero itself is licensed under **GNU AGPL-3.0-or-later**. Generated localization files based on Primero translation resources and modifications applied to a Primero checkout must be handled consistently with the upstream Primero license and notices. This repository does not relicense Primero.
 
 ## Research question
 
