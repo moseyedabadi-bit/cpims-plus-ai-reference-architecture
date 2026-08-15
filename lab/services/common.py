@@ -11,7 +11,7 @@ from typing import Any
 LAYER_NUM = {"L1": 1, "L2": 2, "L3": 3, "L4": 4}
 
 LAYER_FIELDS = {
-    "L1": ["case_alias", "age_band", "case_status", "province_band"],
+    "L1": ["case_id", "case_alias", "age_band", "case_status", "province_band"],
     "L2": [
         "case_alias", "age_band", "case_status", "province_band",
         "family_structure", "social_summary", "reunification_goal",
