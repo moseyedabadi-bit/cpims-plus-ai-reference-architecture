@@ -1,43 +1,73 @@
 # CPIMS+ AI — Human-Centered, Privacy-Preserving Reference Architecture
 
-> **Status:** Research / Synthetic PoC + Persian Primero implementation overlay. **No real child, family, refugee, beneficiary, biometric, or case data is permitted in this repository.**
+> **Status:** Research / runnable synthetic lab + Persian Primero implementation overlay. **No real child, family, refugee, beneficiary, biometric, or case data is permitted in this repository.**
 
 ## What this project is
 
-CPIMS+ AI is an individual research project exploring how artificial intelligence can assist social workers in high-stakes child-protection and humanitarian contexts without concentrating identity, data, institutional power, and AI decision-making in one place.
-
-The architecture is intentionally designed around a simple rule:
+CPIMS+ AI is an independent research project exploring how AI can assist social workers in high-stakes child-protection and humanitarian contexts without concentrating identity, data, institutional power, and AI decision authority in one place.
 
 > **AI may assist. Humans remain accountable for decisions.**
 
-The project is not an endorsed deployment of CPIMS+ and is not endorsed by UNICEF, WFP, NIST, or any government or international organization. It is an independent reference architecture, Persian-localization overlay, security reference implementation, and case-study proposal.
+This repository is not an endorsed deployment of CPIMS+, and it is not endorsed by UNICEF, WFP, NIST, any government, or any international organization. The official CPIMS+ configuration bundles are distributed separately by the upstream Primero/CPIMS+ maintainers and are **not** reproduced here.
+
+## Runnable synthetic lab
+
+[`lab/`](lab/README.md) is a runnable Persian/RTL synthetic environment that turns the architecture into an executable workflow.
+
+```bash
+cd lab
+docker compose up --build
+```
+
+Open:
+
+```text
+http://localhost:8080
+```
+
+The lab demonstrates:
+
+- three mock IdPs and a **2-of-3** Trust Gateway;
+- issuer, audience, nonce, freshness, expiry, replay, and same-subject binding checks;
+- opaque sessions and pairwise provider pseudonyms;
+- consent separate from authentication;
+- L2 consent and L3 step-up consent;
+- PDP/PEP separation and network-isolated synthetic case data;
+- L4 denial unless a separate case/purpose/requester/time-bound legal authorization exists;
+- an oversight service that can authorize a narrow disclosure but cannot browse case data;
+- AI with no route to the case service and no final-decision endpoint;
+- human decision recording separate from AI output;
+- pseudonymous, tamper-evident audit chaining;
+- synthetic-only Persian case records.
+
+Only the portal is exposed to the host. The Docker networks deliberately separate identity, policy, enforcement, data, AI, and audit trust domains.
+
+The three IdP containers are a **logical simulation**, not evidence of real-world provider independence across vendors, jurisdictions, infrastructure, keys, DNS/CDN, or operational administration. The lab uses development-only HMAC tokens to stay dependency-free and inspectable; those token formats and checked-in development keys must never be used in production.
 
 ## Persian Primero implementation
 
-The repository now contains [`implementation/`](implementation/README.md), a reproducible implementation overlay for the open-source **Primero v2.14.5** codebase used by CPIMS+.
+[`implementation/`](implementation/README.md) is a reproducible localization/security overlay for the open-source **Primero v2.14.5** codebase used by CPIMS+.
 
-The Persian localization path uses Primero's existing complete `fa-AF` locale as a structural baseline and generates an Iranian Persian `fa-IR` locale with the same translation-key coverage, Persian terminology normalization, Persian Gregorian month labels, RTL registration, and fallback configuration. Automated QA verifies missing translation keys and highlights terminology that still needs professional Iranian child-protection/legal/medical review.
+It uses Primero's existing `fa-AF` translation structure to generate an Iranian Persian `fa-IR` locale with equivalent translation-key coverage, RTL registration, fallback configuration, terminology normalization, and automated QA. Professional Iranian child-protection, legal, medical, and safeguarding terminology review remains mandatory before real deployment.
 
-Because the official CPIMS+ configuration bundles are distributed separately by the Primero/CPIMS+ maintainers, this repository does **not** pretend to contain or recreate the official CPIMS+ configuration. The overlay is designed to be applied to an authorized Primero/CPIMS+ installation.
-
-The same implementation directory contains executable synthetic security reference code for 2-of-3 identity attestations, replay/audience/nonce checks, pairwise pseudonyms, consent and step-up authorization, separate L4 legal/emergency grants, AI context minimization, L4 export denial, and tamper-evident audit chaining. These are reference controls, not a claim of production certification.
+Primero itself is not copied into this repository. The overlay is designed to be applied to an authorized Primero/CPIMS+ installation.
 
 ## Core architectural principles
 
-1. **No single point of complete knowledge** — no provider, administrator, model, database, social worker, or oversight actor should independently possess enough information to reconstruct the complete identity and life history of a beneficiary.
-2. **Identifier is not authority** — possession of a token, pseudonym, case reference, or session ID never grants access by itself.
-3. **Purpose-bound disclosure** — every disclosure must have a subject, purpose, scope, legal/consent basis, and expiry.
-4. **Human-in-command** — AI can search, summarize, compare, explain, surface evidence, and recommend. It must not independently decide family reunification, removal, denial of service, legal status, or other high-impact outcomes.
-5. **Distributed trust** — identity trust is not concentrated in one external provider. The research design uses independent attestations and a 2-of-3 policy at a trust gateway.
-6. **Local biometric activation** — biometrics are intended only to unlock a local authenticator/private key. Raw biometric data and biometric templates are not part of CPIMS+, AI, or analytics storage.
-7. **Pairwise pseudonymity** — domains use different pseudonymous identifiers to reduce cross-domain correlation.
-8. **Minimum necessary context** — AI receives derived or minimized attributes instead of raw identity data wherever possible.
-9. **Independent auditability** — sensitive access and AI-assisted recommendations must be attributable and reviewable without creating a second shadow identity database.
-10. **Synthetic-first** — the architecture must pass security, privacy, red-team, governance, and ethics gates before any consideration of real beneficiary data.
+1. **No single point of complete knowledge** — no provider, administrator, model, database, social worker, or oversight actor should independently possess the complete identity and life history of a beneficiary.
+2. **Identifier is not authority** — possession of a token, pseudonym, case reference, or session ID does not itself grant access.
+3. **Purpose-bound disclosure** — every disclosure needs a subject, purpose, scope, basis, operation, and expiry.
+4. **Human-in-command** — AI may retrieve, summarize, compare, explain, identify uncertainty, and recommend; it must not independently determine a child's fate.
+5. **Distributed trust** — sensitive trust and privilege should be separated rather than concentrated.
+6. **Local biometric activation only** — the intended production architecture keeps raw biometric material out of CPIMS+, AI, analytics, logs, and backups.
+7. **Pairwise pseudonymity** — reusable global child identifiers are forbidden across trust domains.
+8. **Minimum necessary context** — AI receives derived/minimized attributes where possible.
+9. **Independent auditability** — sensitive access and AI-assisted workflows must remain attributable and reviewable.
+10. **Synthetic-first** — real beneficiary data remains prohibited until independent architecture, privacy, security, legal, child-protection, and ethics gates are passed.
 
 ## NIST alignment
 
-This project is **NIST-aligned, not NIST-certified or NIST-compliant by claim**. The architecture draws from:
+This project is **NIST-aligned, not NIST-certified and not a claim of NIST compliance**. Design references include:
 
 - NIST SP 800-63-4 family — Digital Identity Guidelines
 - NIST SP 800-207 — Zero Trust Architecture
@@ -45,64 +75,65 @@ This project is **NIST-aligned, not NIST-certified or NIST-compliant by claim**.
 - NIST SP 800-53 Rev. 5 — security and privacy controls
 - NIST Cybersecurity Framework 2.0
 - NIST Privacy Framework
-- NIST AI Risk Management Framework (AI RMF)
+- NIST AI Risk Management Framework
 
-The 2-of-3 identity-attestation design, judicial/independent authorization model, layered consent model, and several child-protection safeguards are **project-specific controls**, not requirements imposed by NIST.
+The 2-of-3 identity threshold, layered consent model, and judicial/independent authorization design are project-specific controls, not NIST requirements.
 
 ## Repository map
 
-- [`PROJECT.yaml`](PROJECT.yaml) — machine-readable project manifest and architectural invariants.
-- [`ARCHITECTURE.md`](ARCHITECTURE.md) — system components, trust boundaries, token model, and data flow.
-- [`PHILOSOPHY.md`](PHILOSOPHY.md) — human-centered philosophy and limits of the project.
-- [`AI_CHARTER.md`](AI_CHARTER.md) — what AI is and is not permitted to do.
-- [`THREAT_MODEL.md`](THREAT_MODEL.md) — adversaries, abuse cases, failure modes, and residual risk.
-- [`DATA_GOVERNANCE.md`](DATA_GOVERNANCE.md) — data classification, minimization, lifecycle, and disclosure rules.
-- [`CONSENT_IDENTITY.md`](CONSENT_IDENTITY.md) — identity, local biometrics, 2-of-3 attestation, consent, and step-up authorization.
-- [`NIST_MAPPING.md`](NIST_MAPPING.md) — reference mapping from architecture functions to NIST publications/control families.
-- [`SECURITY.md`](SECURITY.md) — repository security policy and prohibition on real beneficiary data.
-- [`implementation/`](implementation/README.md) — Persian Primero localization and executable synthetic security reference.
-- [`docs/README.fa.md`](docs/README.fa.md) — معرفی و اصول پروژه به زبان فارسی.
+- [`PROJECT.yaml`](PROJECT.yaml) — machine-readable project manifest and invariants.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — trust boundaries, components, token model, and data flow.
+- [`PHILOSOPHY.md`](PHILOSOPHY.md) — human-centered philosophy.
+- [`AI_CHARTER.md`](AI_CHARTER.md) — permitted and forbidden AI authority.
+- [`THREAT_MODEL.md`](THREAT_MODEL.md) — adversaries, abuse cases, failures, and residual risk.
+- [`DATA_GOVERNANCE.md`](DATA_GOVERNANCE.md) — classification, minimization, lifecycle, and disclosure.
+- [`CONSENT_IDENTITY.md`](CONSENT_IDENTITY.md) — identity, consent, federation, and step-up authorization.
+- [`NIST_MAPPING.md`](NIST_MAPPING.md) — architecture-to-NIST reference mapping.
+- [`SECURITY.md`](SECURITY.md) — repository security and real-data prohibition.
+- [`implementation/`](implementation/README.md) — Persian Primero localization and security reference code.
+- [`lab/`](lab/README.md) — runnable synthetic CPIMS+ security/governance lab.
+- [`docs/README.fa.md`](docs/README.fa.md) — Persian project introduction.
 
-## High-level flow
+## Lab flow
 
 ```mermaid
 flowchart TD
-    P[Beneficiary] --> A[Secure local authenticator]
-    A --> B[Local biometric activation]
-    B --> K[Cryptographic proof]
-    K --> I1[IdP A assertion]
-    K --> I2[IdP B assertion]
-    K --> I3[IdP C assertion]
-    I1 --> TG[Trust Gateway: 2 of 3]
-    I2 --> TG
-    I3 --> TG
-    TG --> S[Scoped session credential]
-    S --> CE[Consent Engine]
-    CE --> PE[Policy Engine / PEP]
-    PE --> CB[Context Builder]
-    CB --> AI[AI with ephemeral AICTX]
-    AI --> SW[Social Worker]
-    SW --> HD[Human Decision]
-    HD --> AU[Independent Audit / Appeal]
+    U[Persian RTL Portal] --> G[Trust / Application Gateway]
+    G --> A[IdP A]
+    G --> B[IdP B]
+    G --> C[IdP C]
+    G --> P[Policy PDP]
+    G --> O[Synthetic Oversight]
+    G --> DG[Data Gateway / PEP]
+    DG --> D[Synthetic Case Domain]
+    G --> AI[AI Context Service]
+    AI --> DG
+    G --> AU[Tamper-evident Audit]
+    AI --> G
+    G --> H[Human Decision]
 ```
+
+The public gateway is not attached to the case-data network, the oversight service is not attached to the case-data network, and the AI service cannot call the case service directly.
+
+## Validation
+
+The repository contains separate GitHub Actions workflows for:
+
+- Persian Primero overlay validation;
+- security-reference tests;
+- synthetic-lab unit and E2E tests;
+- Docker Compose build/start/health smoke testing.
+
+A green CI result means the research implementation is reproducible under its tests. It does **not** establish production security, legal compliance, child-safeguarding adequacy, or fitness for real beneficiary data.
 
 ## Safety boundary
 
-This repository intentionally does **not** contain:
-
-- production Kubernetes manifests tied to a real organization;
-- real IP addresses, hostnames, credentials, API keys, storage paths, or infrastructure identifiers;
-- real beneficiary records or screenshots;
-- biometric samples or templates;
-- real case tokens or identity mappings;
-- instructions for bypassing lawful access controls or concealing illegal activity.
+This repository intentionally contains no real beneficiary records, biometric samples/templates, production tokens, organization secrets, production IPs/hostnames, or operational infrastructure credentials. Synthetic identifiers and development secrets are visibly marked as such.
 
 ## Licensing
 
-The original architecture documents and original reference/overlay code in this repository are released under the repository MIT license. Primero itself is licensed under **GNU AGPL-3.0-or-later**. Generated localization files based on Primero translation resources and modifications applied to a Primero checkout must be handled consistently with the upstream Primero license and notices. This repository does not relicense Primero.
+Original architecture documents and original reference/lab code in this repository are released under the repository MIT license. Primero itself is licensed under **GNU AGPL-3.0-or-later**. Generated localization files based on Primero resources and modifications applied to a Primero checkout must be handled consistently with the upstream license and notices. This repository does not relicense Primero.
 
 ## Research question
 
 > **Can an AI-enabled humanitarian or child-protection system provide enough information to help a professional act responsibly, while ensuring that no single actor — human, institutional, technical, or artificial — possesses enough information and authority to control the whole person?**
-
-That question, rather than the sophistication of the model, is the center of this project.
