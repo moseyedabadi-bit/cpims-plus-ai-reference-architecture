@@ -1,0 +1,173 @@
+name: cpims-synthetic-lab
+
+x-service-defaults: &service_defaults
+  build:
+    context: ./services
+  restart: unless-stopped
+  read_only: true
+  tmpfs:
+    - /tmp
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+
+services:
+  portal:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${LAB_PORT:-8080}:8080"
+    volumes:
+      - ./portal/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./portal:/usr/share/nginx/html:ro
+    networks:
+      - edge
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    depends_on:
+      gateway:
+        condition: service_healthy
+
+  gateway:
+    <<: *service_defaults
+    environment:
+      MODE: gateway
+      LAB_AUDIENCE: cpims-synthetic-lab
+      IDP_A_URL: http://idp-a:8000
+      IDP_B_URL: http://idp-b:8000
+      IDP_C_URL: http://idp-c:8000
+      IDP_A_KEY: ${IDP_A_KEY:-synthetic-idp-A-only}
+      IDP_B_KEY: ${IDP_B_KEY:-synthetic-idp-B-only}
+      IDP_C_KEY: ${IDP_C_KEY:-synthetic-idp-C-only}
+      POLICY_URL: http://policy:8000
+      DATA_GATEWAY_URL: http://data-gateway:8000
+      AI_URL: http://ai:8000
+      OVERSIGHT_URL: http://oversight:8000
+      AUDIT_URL: http://audit:8000
+      AUDIT_PSEUDO_KEY: ${AUDIT_PSEUDO_KEY:-synthetic-audit-pseudonym-only}
+    networks:
+      - edge
+      - identity
+      - policy_net
+      - pep
+      - ai_net
+      - audit_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 3s
+
+  idp-a:
+    <<: *service_defaults
+    environment:
+      MODE: idp
+      IDP_ID: A
+      IDP_SIGNING_KEY: ${IDP_A_KEY:-synthetic-idp-A-only}
+      LAB_AUDIENCE: cpims-synthetic-lab
+    networks: [identity]
+
+  idp-b:
+    <<: *service_defaults
+    environment:
+      MODE: idp
+      IDP_ID: B
+      IDP_SIGNING_KEY: ${IDP_B_KEY:-synthetic-idp-B-only}
+      LAB_AUDIENCE: cpims-synthetic-lab
+    networks: [identity]
+
+  idp-c:
+    <<: *service_defaults
+    environment:
+      MODE: idp
+      IDP_ID: C
+      IDP_SIGNING_KEY: ${IDP_C_KEY:-synthetic-idp-C-only}
+      LAB_AUDIENCE: cpims-synthetic-lab
+    networks: [identity]
+
+  oversight:
+    <<: *service_defaults
+    environment:
+      MODE: oversight
+      OVERSIGHT_SIGNING_KEY: ${OVERSIGHT_SIGNING_KEY:-synthetic-oversight-only}
+    networks: [policy_net]
+
+  policy:
+    <<: *service_defaults
+    environment:
+      MODE: policy
+      POLICY_SIGNING_KEY: ${POLICY_SIGNING_KEY:-synthetic-policy-only}
+      OVERSIGHT_SIGNING_KEY: ${OVERSIGHT_SIGNING_KEY:-synthetic-oversight-only}
+    networks: [policy_net]
+
+  data-gateway:
+    <<: *service_defaults
+    environment:
+      MODE: data_gateway
+      POLICY_SIGNING_KEY: ${POLICY_SIGNING_KEY:-synthetic-policy-only}
+      CASE_URL: http://case:8000
+      CASE_PEER_KEY: ${CASE_PEER_KEY:-synthetic-case-peer-only}
+    networks:
+      - pep
+      - data_net
+
+  case:
+    <<: *service_defaults
+    environment:
+      MODE: case
+      CASE_PEER_KEY: ${CASE_PEER_KEY:-synthetic-case-peer-only}
+    networks: [data_net]
+
+  ai:
+    <<: *service_defaults
+    environment:
+      MODE: ai
+      DATA_GATEWAY_URL: http://data-gateway:8000
+    networks:
+      - ai_net
+      - pep
+
+  audit:
+    build:
+      context: ./services
+    restart: unless-stopped
+    environment:
+      MODE: audit
+      AUDIT_FILE: /data/audit.jsonl
+    volumes:
+      - audit-data:/data
+    networks: [audit_net]
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    user: app
+
+networks:
+  edge: {}
+  identity:
+    internal: true
+  policy_net:
+    internal: true
+  pep:
+    internal: true
+  ai_net:
+    internal: true
+  data_net:
+    internal: true
+  audit_net:
+    internal: true
+
+volumes:
+  audit-data: {}

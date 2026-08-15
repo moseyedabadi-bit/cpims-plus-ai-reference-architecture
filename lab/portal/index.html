@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>آزمایشگاه مصنوعی CPIMS+ AI</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">CPIMS+ AI Synthetic Lab</p>
+      <h1>آزمایشگاه مصنوعی CPIMS+ با رابط فارسی</h1>
+      <p>محیط پژوهشی برای آزمون اعتماد توزیع‌شده، رضایت مرحله‌ای، Policy Gateway، AI حداقلی و ممیزی مستقل.</p>
+    </div>
+    <div class="badge danger">فقط داده مصنوعی — استفاده Production ممنوع</div>
+  </header>
+
+  <main class="grid">
+    <section class="card span-2">
+      <h2>۱) احراز هویت مصنوعی ۲ از ۳</h2>
+      <div class="row">
+        <label>مددجو
+          <select id="slot"></select>
+        </label>
+        <label>شبیه‌سازی قطع Provider
+          <select id="skipProvider">
+            <option value="">هیچ‌کدام</option>
+            <option value="A">Provider A</option>
+            <option value="B">Provider B</option>
+            <option value="C">Provider C</option>
+          </select>
+        </label>
+        <button id="authBtn">ایجاد نشست امن</button>
+      </div>
+      <pre id="authOut" class="output"></pre>
+    </section>
+
+    <section class="card">
+      <h2>۲) رضایت</h2>
+      <p>Authentication با Consent یکی نیست. برای L3 رضایت مرحله‌ای قوی‌تر لازم است.</p>
+      <div class="stack">
+        <button data-consent="L2">ثبت رضایت L2</button>
+        <button data-consent="L3">ثبت Step-up Consent برای L3</button>
+        <button id="revokeBtn" class="secondary">لغو رضایت</button>
+      </div>
+      <pre id="consentOut" class="output"></pre>
+    </section>
+
+    <section class="card">
+      <h2>۳) پرونده‌های مجاز</h2>
+      <button id="casesBtn">دریافت فهرست L1</button>
+      <div id="casesList" class="list"></div>
+    </section>
+
+    <section class="card span-2">
+      <h2>۴) دسترسی طبقه‌بندی‌شده</h2>
+      <div class="row">
+        <label>پرونده
+          <select id="caseId"></select>
+        </label>
+        <label>سطح
+          <select id="layer">
+            <option value="L1">L1 — عملیاتی</option>
+            <option value="L2">L2 — اجتماعی/خانوادگی</option>
+            <option value="L3">L3 — بسیار حساس</option>
+            <option value="L4">L4 — محدود/مهروموم‌شده</option>
+          </select>
+        </label>
+        <button id="readBtn">درخواست دسترسی</button>
+        <button id="orderBtn" class="warning">صدور مجوز قضایی مصنوعی L4</button>
+      </div>
+      <p class="muted">مجوز L4 موردی، فقط خواندنی و زمان‌دار است؛ قاضی هیچ Dashboard یا دسترسی سراسری ندارد.</p>
+      <pre id="caseOut" class="output"></pre>
+    </section>
+
+    <section class="card">
+      <h2>۵) دستیار AI</h2>
+      <p>AI فقط از Context حداقلی L2/L3 استفاده می‌کند و هیچ اختیار تصمیم نهایی ندارد.</p>
+      <div class="stack">
+        <button id="aiL2Btn">تحلیل با Context L2</button>
+        <button id="aiL3Btn">تحلیل با Context L3</button>
+      </div>
+      <pre id="aiOut" class="output"></pre>
+    </section>
+
+    <section class="card">
+      <h2>۶) تصمیم انسانی</h2>
+      <label>نتیجه مددکار
+        <select id="humanDecision">
+          <option value="consider_reunification">بررسی امکان بازپیوند</option>
+          <option value="follow_up">نیاز به پیگیری</option>
+          <option value="do_not_reunify_yet">فعلاً بازپیوند انجام نشود</option>
+          <option value="insufficient_evidence">شواهد ناکافی</option>
+        </select>
+      </label>
+      <label>دلیل
+        <textarea id="decisionReason" maxlength="500" placeholder="استدلال حرفه‌ای مددکار..."></textarea>
+      </label>
+      <button id="decisionBtn">ثبت تصمیم انسانی</button>
+      <pre id="decisionOut" class="output"></pre>
+    </section>
+
+    <section class="card span-2">
+      <h2>۷) Audit مستقل و Tamper-evident</h2>
+      <button id="auditBtn">بازخوانی Audit</button>
+      <pre id="auditOut" class="output tall"></pre>
+    </section>
+  </main>
+
+  <footer>
+    ایم محیط نسخه رسمی CPIMS+ نیست و هیچ داده واقعی نباید در آن وارد شود.
+  </footer>
+  <script src="/app.js" defer></script>
+</body>
+</html>
