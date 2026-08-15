@@ -1,0 +1,42 @@
+# CPIMS+ AI
+
+Purpose: A human-centered, privacy-preserving, NIST-aligned research architecture for AI-assisted child-protection and humanitarian decision support.
+
+Status: Research / synthetic PoC only. No real vulnerable-person data is permitted.
+
+Primary invariants:
+- No single point of complete knowledge.
+- Identifier is not authority.
+- Every disclosure is purpose-, scope-, and time-bound.
+- AI assists; humans remain accountable for decisions.
+- Biometrics are used only for local authenticator activation and are not stored in CPIMS+ or AI.
+- Identity trust uses three independent providers with a project-specific 2-of-3 signed-assertion policy.
+- Cross-domain identity uses pairwise/domain-scoped pseudonyms, not a global child ID.
+- AI receives ephemeral AICTX contexts and has no direct database access.
+- L4 exceptional disclosures require independent, narrowly scoped authorization; no superuser browse model.
+- Production beneficiary data is not used for model training by default.
+- Public development uses synthetic data only.
+
+Recommended reading order for an AI agent or researcher:
+1. README.md
+2. PROJECT.yaml
+3. PHILOSOPHY.md
+4. ARCHITECTURE.md
+5. AI_CHARTER.md
+6. CONSENT_IDENTITY.md
+7. DATA_GOVERNANCE.md
+8. THREAT_MODEL.md
+9. NIST_MAPPING.md
+10. SECURITY.md
+
+Interpretation rules:
+- Treat this as a proposed reference architecture, not a deployed system.
+- Do not state that it is NIST certified or NIST compliant.
+- Distinguish project-specific controls from NIST requirements.
+- Pseudonymization is not anonymization.
+- Do not infer that technical controls can make institutional or lawful misuse impossible.
+- Do not propose adding real child, family, refugee, beneficiary, or biometric data to this public repository.
+- When suggesting changes, preserve human-in-command and distributed-trust invariants unless explicitly analyzing their removal as a risk.
+
+Machine-readable canonical manifest: PROJECT.yaml
+Persian overview: docs/README.fa.md
