@@ -11,23 +11,32 @@
 - [x] Define independent audit and no-global-superadmin principles.
 - [x] Map architecture concepts to relevant NIST publications.
 
-## Phase 1 — Synthetic reference implementation
+## Phase 1 — Persian Primero overlay and synthetic reference implementation
 
+- [x] Pin Primero upstream to v2.14.5.
+- [x] Add reproducible `fa-IR` locale generator based on the complete upstream `fa-AF` key structure.
+- [x] Add RTL, locale-registration and fallback patcher for Primero.
+- [x] Add locale QA for missing keys and Iranian-Persian terminology review candidates.
+- [x] Add GitHub Actions validation against the pinned Primero release.
+- [ ] Complete professional Iranian Persian review by child-protection/legal/medical specialists.
+- [ ] Obtain and review an authorized official CPIMS+ configuration bundle for deployment-specific localization.
 - [ ] Build synthetic beneficiary/family/case generator.
-- [ ] Implement local authenticator proof simulation.
-- [ ] Implement three independent test IdPs.
-- [ ] Implement 2-of-3 assertion validation at Trust Gateway.
-- [ ] Implement subject binding registry with no case narratives.
-- [ ] Implement scoped session credentials.
-- [ ] Implement consent manifest and revocation.
-- [ ] Implement Policy Decision/Enforcement Points.
-- [ ] Implement domain PPIs and Correlation Service.
-- [ ] Implement AI Context Builder and single-use AICTX.
-- [ ] Implement append-only/tamper-evident audit PoC.
+- [ ] Implement local hardware-backed authenticator proof simulation.
+- [x] Implement three independent test IdPs in the security reference.
+- [x] Implement 2-of-3 assertion validation at Trust Gateway.
+- [x] Implement subject binding registry with no case narratives.
+- [x] Implement scoped session credentials.
+- [x] Implement purpose-bound consent and step-up authorization model.
+- [x] Implement Policy Decision reference for L1-L4.
+- [x] Implement domain PPIs.
+- [x] Implement AI Context Builder with raw identity rejection.
+- [x] Implement tamper-evident audit PoC.
+- [x] Implement L4 separation between consent and judicial/statutory/emergency grants.
+- [x] Deny L4 bulk/export operations in the reference policy.
 
 ## Phase 2 — AI safety evaluation
 
-- [ ] No-direct-database-access verification.
+- [ ] No-direct-database-access verification in an integrated Primero deployment.
 - [ ] Prompt-injection tests using synthetic case documents.
 - [ ] Hallucination and evidence-grounding evaluation.
 - [ ] Confidence calibration and abstention testing.
@@ -37,22 +46,24 @@
 
 ## Phase 3 — Security and privacy red team
 
-- [ ] Compromise one IdP.
-- [ ] Compromise one data domain.
+- [x] Unit-test compromise-equivalent condition where one IdP alone cannot establish a session.
+- [ ] Compromise one deployed IdP.
+- [ ] Compromise one deployed data domain.
 - [ ] Compromise each administrative role independently.
 - [ ] Attempt cross-domain re-identification.
-- [ ] Attempt assertion/session replay.
-- [ ] Attempt consent bypass.
-- [ ] Attempt L4 authorization bypass.
-- [ ] Attempt bulk export.
-- [ ] Attempt audit tampering.
-- [ ] Test break-glass abuse.
+- [x] Test assertion replay rejection in reference code.
+- [x] Test audience/nonce/subject-binding failures in reference code.
+- [x] Test consent/step-up bypass rejection in reference code.
+- [x] Test L4 authorization bypass and export rejection in reference code.
+- [x] Test audit tamper detection in reference code.
+- [ ] Test break-glass abuse in an integrated environment.
 - [ ] Test provider outage and recovery.
 - [ ] Test backup/restore without collapsing trust domains.
 
 ## Phase 4 — Independent review
 
 - [ ] Child-protection professional review.
+- [ ] Iranian Persian terminology review.
 - [ ] Privacy engineering review.
 - [ ] Cybersecurity review.
 - [ ] AI safety/governance review.
